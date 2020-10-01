@@ -18,7 +18,7 @@ pipeline {
                      
                  steps {
                   
-                 sh 'sudo docker stop my-running-app-2;sudo docker rm my-running-app-2'
+                 sh 'sudo docker ps | grep my-running-app-2 && sudo docker stop my-running-app-2;sudo docker rm my-running-app-2 || echo "No container "'
                  sh 'sudo docker run -dit --name my-running-app-2 -p 8082:80 my-apache3'
 
                  }
