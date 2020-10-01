@@ -1,25 +1,28 @@
 pipeline {
          agent any
          stages {
-                 stage('One') {
+                 stage('Checkout') {
                  steps {
-                     echo 'Hello this is ste=age 1'
+                     checkout([$class: 'GitSCM', branches: [[name: '*/Jenkinsfile_test']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'aws_ssh_keys', url: 'git@github.com:posttokrish/remote_add_origin.git']]])
+                     sh 'echo "Hello this is Checkouut"'
+                     sh 'pwd;ls -lR'
                  }
                  }
-                 stage('Two') {
+                 stage('Build') {
                  steps {
-                     echo 'Hello this is ste=age 2'
+                     echo 'Hello this is stage Build'
+                     sh 'sudo docker build -t my-apache3 .'
                  }
                  }
-                 stage('Three') {
-                 when {
-                       not {
-                            branch "master"
-                       }
-                 }
+                 stage('Run') {
+                     
                  steps {
-                       echo "Hello"
+                  
+                 sh 'sudo docker stop my-running-app-2;sudo docker rm my-running-app-2'
+                 sh 'sudo docker run -dit --name my-running-app-2 -p 8082:80 my-apache3'
+
                  }
-        }
+                 }
+        
     }
 }
